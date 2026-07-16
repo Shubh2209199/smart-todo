@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}About{% endblock %}
+{% block extra_head %}
+<style>
+.about-body { display:flex; justify-content:center; align-items:center; min-height:100vh; margin:0; }
+.about-card { background: var(--card); padding:30px; border-radius:10px; width:420px; max-width:90vw; box-shadow: var(--shadow); text-align:center; }
+.about-card a.linkedin { display:inline-block; margin-top:20px; text-decoration:none; color:white; background:#007bff; padding:10px 20px; border-radius:5px; }
+.about-card a.linkedin:hover { background:#0056b3; }
+.about-card a.back { display:inline-block; margin-top:15px; text-decoration:none; color:var(--primary); }
+</style>
+{% endblock %}
+{% block body_class %}about-body{% endblock %}
+{% block body %}
+<div class="about-card">
+  <h2>📌 About This App</h2>
+  <p>This is a Flask-based Smart To-Do List web application.<br><br>
+  Features:<br>
+  ✔ Login &amp; Register<br>
+  ✔ Add / Edit / Delete Tasks<br>
+  ✔ Due Date &amp; Time Support<br>
+  ✔ Priority Levels<br>
+  ✔ Search &amp; Filtering<br>
+  ✔ AI-style Reminders &amp; Insights<br>
+  ✔ Dark / Light Mode<br>
+  ✔ Mobile-Responsive Design</p>
+  <p><b>Developer:</b> Shubham Maurya</p>
+  <div style="text-align:center; font-size:15px; line-height:1.7;">
+    Computer Science and Engineering (AIML) Student at <b>Thakur Shyamnarayan Engineering College</b><br><br>
+    Passionate about software development, Python, AI, and building impactful real-world projects.
+  </div>
+  <div>
+    <a class="linkedin" href="https://www.linkedin.com/in/shubham-maurya-b1b76b339" target="_blank" rel="noopener noreferrer">🔗 Connect on LinkedIn</a>
+  </div>
+  <a class="back" href="{{ url_for('todos.index') }}">⬅ Back to Home</a>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+{% block body %}
+<div class="container">
+  <div class="top-bar">
+    <h1>👤 Profile</h1>
+    <a href="{{ url_for('todos.index') }}" class="btn-link secondary">⬅ Dashboard</a>
+  </div>
+
+  <p style="text-align:center; color:var(--text-muted);">
+    Signed in as <b>{{ current_user.username }}</b><br>
+    Member since {{ current_user.created_at.strftime('%d %b %Y') }}
+  </p>
+
+  <div class="stats-grid">
+    <div class="stat-card"><div class="num">{{ stats.total }}</div><div class="label">Total</div></div>
+    <div class="stat-card"><div class="num">{{ stats.completed }}</div><div class="label">Completed</div></div>
+    <div class="stat-card"><div class="num">{{ stats.pending }}</div><div class="label">Pending</div></div>
+    <div class="stat-card"><div class="num">{{ stats.completion_rate }}%</div><div class="label">Completion</div></div>
+  </div>
+
+  <hr>
+
+  <h2 style="text-align:left;">🔒 Change Password</h2>
+  {% if error %}<p class="error">{{ error }}</p>{% endif %}
+  {% if success %}<p class="success">{{ success }}</p>{% endif %}
+  <form method="POST" novalidate>
+    {{ form.hidden_tag() }}
+    <label>Current Password</label>
+    {{ form.current_password(style="width:100%; margin:8px 0 12px;") }}
+    <label>New Password</label>
+    {{ form.new_password(style="width:100%; margin:8px 0 12px;") }}
+    <small style="color:var(--text-muted);">Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char</small>
+    <label style="margin-top:12px; display:block;">Confirm New Password</label>
+    {{ form.confirm_new_password(style="width:100%; margin:8px 0 12px;") }}
+    <button type="submit" style="width:100%;">Update Password</button>
+  </form>
+</div>
+{% endblock %}

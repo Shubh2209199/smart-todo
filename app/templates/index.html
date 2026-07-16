@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Smart To-Do{% endblock %}
+{% block body %}
+<div class="welcome-top">👋 Welcome back, {{ current_user.username }}</div>
+<div class="container">
+  <div class="top-bar">
+    <h1>📝 Smart To-Do</h1>
+    <div class="links">
+      <button id="theme-toggle-btn" type="button" class="theme-toggle">
+        {{ '☀️ Light' if current_user.theme == 'dark' else '🌙 Dark' }}
+      </button>
+      <a href="{{ url_for('profile.profile') }}" class="btn-link secondary">👤 Profile</a>
+      <a href="{{ url_for('main.about') }}" class="btn-link">ℹ️ About</a>
+      <a class="logout" href="{{ url_for('auth.logout') }}">Logout</a>
+    </div>
+  </div>
+
+  {% for r in reminders %}
+  <div class="ai-banner {{ r.type }}">
+    <span class="title">{{ r.icon }} {{ r.title }}</span>
+    {{ r.message }}
+  </div>
+  {% endfor %}
+
+  <form method="POST" class="task-form" novalidate>
+    {{ form.hidden_tag() }}
+    {{ form.task(placeholder="New task...") }}
+    {{ form.priority() }}
+    {{ form.due_date() }}
+    {{ form.due_time() }}
+    {{ form.submit() }}
+    {% if form.task.errors %}<div class="field-errors">{{ form.task.errors[0] }}</div>{% endif %}
+  </form>
+
+  <form method="GET" class="toolbar">
+    <input type="text" name="q" placeholder="🔍 Search tasks..." value="{{ search_query }}">
+    <select name="filter" onchange="this.form.submit()">
+      <option value="all" {{ 'selected' if filter_type == 'all' }}>All Tasks</option>
+      <option value="pending" {{ 'selected' if filter_type == 'pending' }}>Pending</option>
+      <option value="completed" {{ 'selected' if filter_type == 'completed' }}>Completed</option>
+    </select>
+    <select name="priority" onchange="this.form.submit()">
+      <option value="all" {{ 'selected' if priority_filter == 'all' }}>All Priorities</option>
+      <option value="High" {{ 'selected' if priority_filter == 'High' }}>High</option>
+      <option value="Medium" {{ 'selected' if priority_filter == 'Medium' }}>Medium</option>
+      <option value="Low" {{ 'selected' if priority_filter == 'Low' }}>Low</option>
+    </select>
+    <button type="submit">Apply</button>
+  </form>
+
+  {% if insights %}
+  <div class="insights-box">
+    <h3>🧠 Insights</h3>
+    <ul>
+      {% for insight in insights %}
+      <li>{{ insight }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% if todos %}
+    {% for t in todos %}
+    <div class="task {% if t.completed %}done{% endif %}">
+      <b>{{ t.task }}</b>
+      <span class="badge {{ t.priority.lower() }}">{{ t.priority }}</span>
+      {% if t.due_date and t.due_date < today and not t.completed %}
+        <span class="overdue">Overdue</span>
+      {% endif %}
+      <small>
+        Created: {{ t.created_at.strftime('%d %b %Y %H:%M') }}
+        {% if t.due_date %} • Due: {{ t.due_date.strftime('%d %b %Y') }}{% if t.due_time %} {{ t.due_time.strftime('%H:%M') }}{% endif %}{% endif %}
+      </small>
+      <div class="actions">
+        <form method="POST" action="{{ url_for('todos.complete', id=t.id) }}">
+          {{ form.csrf_token }}
+          <button type="submit" class="link-btn">✔ {{ 'Undo' if t.completed else 'Done' }}</button>
+        </form>
+        <a href="{{ url_for('todos.edit', id=t.id) }}">✏ Edit</a>
+        <form method="POST" action="{{ url_for('todos.delete', id=t.id) }}" onsubmit="return confirm('Delete this task?');">
+          {{ form.csrf_token }}
+          <button type="submit" class="link-btn danger-link">❌ Delete</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-state">No tasks match your search/filter yet.</div>
+  {% endif %}
+</div>
+{% endblock %}
